@@ -2,14 +2,25 @@ const Transaction = require('../models/transaction')
 
 class Transactions{
     static findAll(req, res){
-        Transaction.find()
+        let keyword = req.query.keyword
+        let query = null
+
+        if(keyword){
+            query = Transaction.find(
+                {"booklist" : { _id: keyword}}
+            )       
+        }else{
+            query = Transaction.find()
+        }
+
+        query
         .populate("member")
         .populate("booklist")
         .then(data=>{
             res.status(200).json(data)
         })
         .catch(err=>{
-            console.log(err);    
+            res.status(500).json(err)   
         })
     }
 

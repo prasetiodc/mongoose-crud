@@ -2,7 +2,19 @@ const Book = require('../models/book')
 
 class Books{
     static findAll(req, res){
-        Book.find()
+        let keyword = req.query.keyword
+        let query = null
+        if(keyword){
+            query = Book.find(
+                {$or: [
+                    { "title" : { $regex: keyword}},
+                    { "author" : { $regex: keyword}}
+                ]}
+            )        
+        }else{
+            query = Book.find()
+        }
+        query
         .then(data=>{
             res.status(200).json(data)
         })
